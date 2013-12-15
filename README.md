@@ -86,13 +86,15 @@ This is a link pattern in Markdown syntax.  The cursor can be anywhere on this
 link, using the text objects or triggering the handler will move it to the URI
 and will work only on it.
 
-1. Initial text, cursor is represented by `|`
+1. Initial text, cursor is represented by `|`:
 
-    some text [Link |description](http://www.slashdot.org/)
 
-2. Text after changing the URI by typing `ciu`
+    some text \[Link |description\](http://www.slashdot.org/)
 
-    some text [Link description](|)
+2. Text after changing the URI by typing `ciu`:
+
+
+    some text \[Link description\](|)
 
 ## TODO
 - add text objects that match till the start and end of a URI

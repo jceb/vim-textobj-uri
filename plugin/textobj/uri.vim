@@ -2,6 +2,7 @@
 " Last Modified: Sat 14. Dec 2013 12:43:29 +0100 CET
 " Author:		Jan Christoph Ebersbach <jceb@e-jc.de>
 " Version:		0.1
+" Dependecy:	vim-textobj-user
 " Copyright:    2013 Jan Christoph Ebersbach
 " License:		MIT LICENSE, see LICENSE file
 " TODO:
@@ -34,10 +35,11 @@ let g:textobj_uri_positioning_patterns = [
 			\ ]
 
 let g:textobj_uri_patterns = {
-			\ '\(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\(:\d+\)\?\(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':silent! !xdg-open "%s"',
-			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':silent! !xdg-open "%s"',
-			\ 'file:///\(\K[\/.]*\)\+': 'gf'
+			\ '\(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\(:\d+\)\?\(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':silent !xdg-open "%s"',
+			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':silent !xdg-open "%s"',
+			\ 'file:///\(\K[\/.]*\)\+': ':silent !xdg-open "%s"'
 			\ }
+
 let g:textobj_uri_search_timeout = 100
 
 call textobj#user#plugin('uri', {

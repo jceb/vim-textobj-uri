@@ -36,7 +36,7 @@ All configuration is stored in global variables starting with `g:textobj_uri_`.
 ### Add more patterns and handlers
 With the following command custom patterns and handlers can be specified:
 
-    :URIPatternAdd <PATTERN> [<HANDLER>]
+    :URIPatternAdd <PATTERN> [<HANDLER>] [<FILETYPE> [<FILETYPE>]]
 
 Integration with other programs is done through a connection of a certain regex
 pattern with a handler.  The handler is optional, it's only used by the `go`
@@ -101,7 +101,6 @@ and will work only on it.
 - add command URIOpen that takes a URI and opens it with the appropriate handler
 - add mapping to run URIOpen on a visual mode selection
 - add more file type specific positioning patterns
-- support file type specific URI handlers??
 
 ## License
 MIT License, see LICENSE file

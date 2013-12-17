@@ -6,12 +6,13 @@
 
 function! s:extract_uri(trailing_whitespace)
 	let orig_pos = getpos('.')
-	let positioning_patterns = copy(g:textobj_uri_positioning_patterns)
+	let positioning_patterns = []
 	for ft in split(&ft, '\.')
 		if exists('g:textobj_uri_positioning_patterns_'.ft)
 			call extend(positioning_patterns, eval('g:textobj_uri_positioning_patterns_'.ft))
 		endif
 	endfor
+	call extend(positioning_patterns, g:textobj_uri_positioning_patterns)
 	for ppattern in positioning_patterns
 		let nozs_ppattern = substitute(ppattern, '\\zs', '', 'g')
 		call setpos('.', orig_pos)
@@ -40,7 +41,13 @@ function! s:extract_uri(trailing_whitespace)
 		let orig_pos = uri_pos
 		break
 	endfor
-	for pattern in keys(g:textobj_uri_patterns)
+	let patterns = copy(g:textobj_uri_patterns)
+	for ft in split(&ft, '\.')
+		if exists('g:textobj_uri_patterns_'.ft)
+			call extend(patterns, eval('g:textobj_uri_patterns_'.ft), 'force')
+		endif
+	endfor
+	for pattern in keys(patterns)
 		call setpos('.', orig_pos)
 		let tmp_pattern = pattern
 		if a:trailing_whitespace
@@ -62,7 +69,7 @@ function! s:extract_uri(trailing_whitespace)
 			call setpos('.', orig_pos)
 			continue
 		endif
-		return [pattern, 'v', start_pos, end_pos]
+		return [[pattern, patterns[pattern]], 'v', start_pos, end_pos]
 	endfor
 endfunction
 
@@ -82,10 +89,25 @@ endfunction
 
 function! textobj#uri#add_pattern(bang, pattern, ...)
 	if a:bang
-		let g:textobj_uri_patterns = {}
+		if a:0 > 1
+			for ft in a:000[1:]
+				exec 'let g:textobj_uri__patterns_'.ft.' = {}'
+			endfor
+		else
+			let g:textobj_uri_patterns = {}
+		endif
 	endif
 	if a:0
-		let g:textobj_uri_patterns[a:pattern] = a:000[0]
+		if a:0 > 1
+			for ft in a:000[1:]
+				if ! exists('g:textobj_uri_patterns_'.ft)
+					exec ':let g:textobj_uri_patterns_'.ft.' = {}'
+				endif
+				call extend(eval('g:textobj_uri_patterns_'.ft), {a:pattern : a:000[0]})
+			endfor
+		else
+			let g:textobj_uri_patterns[a:pattern] = a:000[0]
+		endif
 	else
 		let g:textobj_uri_patterns[a:pattern] = ''
 	endif
@@ -118,7 +140,7 @@ function! textobj#uri#open_uri()
 	let uri = ''
 	if len(res) == 4
 		let uri = getline('.')[res[2][2]-1:res[3][2]-1]
-		let handler = substitute(g:textobj_uri_patterns[res[0]], '%s', uri, 'g')
+		let handler = substitute(res[0][1], '%s', uri, 'g')
 		if len(handler)
 			if handler[0] == ':'
 				exec handler

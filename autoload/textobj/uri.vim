@@ -1,8 +1,33 @@
 " uri.vim:	Textobjects for dealing with URIs
-" Last Modified: Sat 14. Dec 2013 12:43:29 +0100 CET
+" Last Modified: Sat 21. Dec 2013 18:57:55 +0100 CET
 " Author:		Jan Christoph Ebersbach <jceb@e-jc.de>
 " Copyright:    2013 Jan Christoph Ebersbach
 " License:		MIT LICENSE, see LICENSE file
+
+let g:textobj_uri_positioning_patterns_asciidoc = [
+ 			\ '\%(http\|link\|xref\|mailto\|image:\?\|include:\):\zs[^[]\+\[[^]]*\]',
+			\ '<<\zs[^,>]\+\%(,[^>]\+\)\?>>',
+			\ ]
+
+let g:textobj_uri_positioning_patterns_markdown = [
+ 			\ '\[[^]]*\](\zs[^)]\+)',
+ 			\ '\[[^]]\+\] \?[\zs[^]]\+]',
+			\ ]
+
+let g:textobj_uri_positioning_patterns_org = [
+ 			\ '\[\{2}\zs[^][]*\%(\]\[[^][]*\)\?\]\{2}',
+ 			\ ]
+
+let g:textobj_uri_positioning_patterns = [
+			\ ]
+
+let g:textobj_uri_patterns = {
+			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':silent !xdg-open "%s"',
+			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':silent !xdg-open "%s"',
+			\ 'file:///\%(\K[\/.]*\)\+': ':silent !xdg-open "%s"',
+			\ }
+
+let g:textobj_uri_search_timeout = 100
 
 function! s:extract_uri(trailing_whitespace)
 	let orig_pos = getpos('.')
@@ -139,7 +164,14 @@ function! textobj#uri#open_uri()
 	let res = s:extract_uri(0)
 	let uri = ''
 	if len(res) == 4
-		let uri = getline('.')[res[2][2]-1:res[3][2]-1]
+		" extract submatches
+		let uri_match = matchlist(getline('.')[res[2][2]-1:res[3][2]-1], res[0][0])
+		if len(uri_match) > 1
+			" use first submatch as URI
+			let uri = uri_match[1]
+		else
+			let uri = uri_match[0]
+		endif
 		let handler = substitute(res[0][1], '%s', uri, 'g')
 		if len(handler)
 			if handler[0] == ':'

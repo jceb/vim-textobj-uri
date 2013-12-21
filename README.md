@@ -38,6 +38,12 @@ With the following command custom patterns and handlers can be specified:
 
     :URIPatternAdd <PATTERN> [<HANDLER>] [<FILETYPE> [<FILETYPE>]]
 
+During initialisation of vim the command `:URIPatternAdd` might not be
+available, yet.  Another way to add a pattern is to use the following function
+call:
+
+	:call textobj#uri#add_pattern(<CLEAR_PATTERNS>, <PATTERN>, [<HANDLER>], [<FILETYPE>, [<FILETYPE>]])
+
 Integration with other programs is done through a connection of a certain regex
 pattern with a handler.  The handler is optional, it's only used by the `go`
 keybinding.
@@ -47,15 +53,25 @@ Example:
     :URIPatternAdd spotify:[a-zA-Z0-9]\\+ :silent\ !spotify-client\ "%s"
 
 For both, pattern and handler, spaces need to be escaped with backslash (`\`).
-Adding a bang (`!`) to the command all existing patterns are replaced by the
-specified pattern.
+By adding a bang (`!`) to the command all existing patterns are cleared and
+replaced by the new pattern.
 
 The pattern is `spotify:[a-zA-Z0-9]\\+`, it could be anything that should be a
 URI.
 
-The handler is `:silent\ !spotify-client\ "%s"`.  Handler are either vim
+The handler is `:silent\ !spotify-client\ "%s"`.  Handlers are either vim
 commands starting with a colon (`:`) or vim normal mode commands not starting
 with colon.  If `%s` is present in the handler it will be replaced by the URI.
+
+If the pattern contains a sub-expression than the match of the first
+sub-expression is returned as URI.  This makes it easy to take only a portion of
+the URI for further processing.  Sub-expressions are enclosed by `\(` and `\)`.
+Example pattern:
+
+    spotify:\\([a-zA-Z0-9]\\+\\)
+
+The pattern matches a spotify URI but only the portion after the colon is passed
+on to the handler.
 
 
 It is also possible to build sophisticated handlers that extract a portion of a
@@ -63,8 +79,11 @@ URI to process it further.  E.g. this URI pattern handles bug references in the
 form of: Bug #1234.  It builds a new URL from a static string and the extracted
 bug id:
 
-    :URIPatternAdd Bug:\\?\ #\\?[0-9]\\+ :exec\ ":!xdg-open\ 'http://forge.univention.org/bugzilla/show_bug.cgi?id=".substitute("%s","^[bB]ug:\\\\?\ #\\\\?\\\\([0-9]\\\\+\\\\)$","\\\\1",'')."'"
+    :URIPatternAdd Bug:\\?\ #\\?[0-9]\\+ :exec\ ":!silent\ xdg-open\ 'http://forge.univention.org/bugzilla/show_bug.cgi?id=".substitute("%s","^[bB]ug:\\\\?\ #\\\\?\\\\([0-9]\\\\+\\\\)$","\\\\1",'')."'"
 
+The above example can also be achieved using sub-expressions:
+
+    :URIPatternAdd Bug:\\?\ #\\?\\([0-9]\\+\\) :silent\ !xdg-open\ 'http://forge.univention.org/bugzilla/show_bug.cgi?id=%s'
 
 ### Add positioning patterns
 In markup languages URIs consist of more than the plain URI.  In addition to the
@@ -77,6 +96,12 @@ this position and than the URI patterns are applied.
 The following command specifies a positioning pattern:
 
     :URIPositioningPatternAdd <PATTERN> [<FILETYPE> [<FILETYPE>]]
+
+During initialisation of vim the command `:URIPatternAdd` might not be
+available, yet.  Another way to add a pattern is to use the following function
+call:
+
+	:call textobj#uri#add_positioning_pattern(<CLEAR_PATTERNS>, <PATTERN>, [<FILETYPE>, [<FILETYPE>]])
 
 Example:
 

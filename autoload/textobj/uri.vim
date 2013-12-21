@@ -11,7 +11,7 @@ let g:textobj_uri_positioning_patterns_asciidoc = [
 
 let g:textobj_uri_positioning_patterns_markdown = [
  			\ '\[[^]]*\](\zs[^)]\+)',
- 			\ '\[[^]]\+\] \?[\zs[^]]\+]',
+ 			\ "\\[[^]]*\\]:\\s*<\\?\\zs[^\\t ]\\+\\%(\\s\\+\\([('\"]\\)[^('\"]*\\1\\)\\?",
 			\ ]
 
 let g:textobj_uri_positioning_patterns_org = [
@@ -20,6 +20,10 @@ let g:textobj_uri_positioning_patterns_org = [
 
 let g:textobj_uri_positioning_patterns = [
 			\ ]
+
+let g:textobj_uri_patterns_markdown = {
+ 			\ '\[[^]]\+\] \?\[\([^]]\+\)\]': "/\\V\\^\\s\\*[%s]",
+			\ }
 
 let g:textobj_uri_patterns = {
 			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':silent !xdg-open "%s"',
@@ -166,7 +170,7 @@ function! textobj#uri#open_uri()
 	if len(res) == 4
 		" extract submatches
 		let uri_match = matchlist(getline('.')[res[2][2]-1:res[3][2]-1], res[0][0])
-		if len(uri_match) > 1
+		if uri_match[1] != ''
 			" use first submatch as URI
 			let uri = uri_match[1]
 		else
@@ -174,7 +178,7 @@ function! textobj#uri#open_uri()
 		endif
 		let handler = substitute(res[0][1], '%s', uri, 'g')
 		if len(handler)
-			if handler[0] == ':'
+			if index([':', '/'], handler[0]) != -1
 				exec handler
 			else
 				exec 'normal' handler

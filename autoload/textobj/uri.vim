@@ -178,7 +178,7 @@ function! textobj#uri#open_uri()
 		endif
 		let handler = substitute(res[0][1], '%s', uri, 'g')
 		if len(handler)
-			if index([':', '/'], handler[0]) != -1
+			if index([':', '/', '?'], handler[0]) != -1
 				exec handler
 			else
 				exec 'normal' handler

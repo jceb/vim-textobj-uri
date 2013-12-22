@@ -22,7 +22,8 @@ let g:textobj_uri_positioning_patterns = [
 			\ ]
 
 let g:textobj_uri_patterns_markdown = {
- 			\ '\[[^]]\+\] \?\[\([^]]\+\)\]': "/\\V\\^\\s\\*[%s]",
+ 			\ '\[[^]]\+\] \?\[\([^]]\+\)\]': "/\\V\\^\\s\\*\\[%s\\]:\\s",
+ 			\ '\[\([^]]\+\)\] \?\[\]': "/\\V\\^\\s\\*\\[%s\\]:\\s",
 			\ }
 
 let g:textobj_uri_patterns = {

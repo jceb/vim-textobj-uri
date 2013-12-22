@@ -1,6 +1,7 @@
 " uri.vim:	Textobjects for dealing with URIs
-" Last Modified: Sat 21. Dec 2013 18:57:55 +0100 CET
 " Author:		Jan Christoph Ebersbach <jceb@e-jc.de>
+" Version:		0.3
+" Dependecy:	vim-textobj-user
 " Copyright:    2013 Jan Christoph Ebersbach
 " License:		MIT LICENSE, see LICENSE file
 

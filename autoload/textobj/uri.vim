@@ -28,12 +28,16 @@ let g:textobj_uri_patterns_markdown = {
 			\ }
 
 let g:textobj_uri_patterns = {
-			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d\+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':silent !xdg-open "%s"',
-			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':silent !xdg-open "%s"',
-			\ 'file:///\%(\K[\/.]*\)\+': ':silent !xdg-open "%s"',
+			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d\+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':call TextobjUri_XdgOpen()',
+			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':call TextobjUri_XdgOpen()',
+			\ 'file:///\%(\K[\/.]*\)\+': ':call TextobjUri_XdgOpen()',
 			\ }
 
 let g:textobj_uri_search_timeout = 100
+
+function! TextobjUri_XdgOpen()
+    exec "silent !xdg-open ".substitute(fnameescape(g:textobj_uri), '&', '\\&', 'g')
+endfunction
 
 function! s:extract_uri(trailing_whitespace)
 	let orig_pos = getpos('.')
@@ -178,13 +182,15 @@ function! textobj#uri#open_uri()
 		else
 			let uri = uri_match[0]
 		endif
-		let handler = substitute(res[0][1], '%s', uri, 'g')
+		let handler = substitute(res[0][1], '%s', fnameescape(uri), 'g')
 		if len(handler)
+		    let g:textobj_uri = uri
 			if index([':', '/', '?'], handler[0]) != -1
 				exec handler
 			else
 				exec 'normal' handler
 			endif
+			unlet g:textobj_uri
 		else
 			throw "No handler specified"
 		endif

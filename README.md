@@ -61,7 +61,9 @@ URI.
 
 The handler is `:silent\ !spotify-client\ "%s"`.  Handlers are either vim
 commands starting with a colon (`:`) or vim normal mode commands not starting
-with colon.  If `%s` is present in the handler it will be replaced by the URI.
+with colon.  If `%s` is present in the handler it will be replaced with URI.
+Attention, special characters will not be escaped!  In addition, `g:textobj_uri`
+will be set to URI.  It might be safter to use the variable to access URI.
 
 If the pattern contains a sub-expression than the match of the first
 sub-expression is returned as URI.  This makes it easy to take only a portion of

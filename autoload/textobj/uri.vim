@@ -37,9 +37,9 @@ let g:textobj_uri_search_timeout = 100
 
 function! TextobjUriOpen()
     if executable('xdg-open')
-        exec "silent !xdg-open ".substitute(fnameescape(g:textobj_uri), '&', '\\&', 'g')
+        silent! call system(printf('%s %s &', 'xdg-open', shellescape(g:textobj_uri)))
     elseif executable('open')
-        exec "silent !open ".substitute(fnameescape(g:textobj_uri), '&', '\\&', 'g')
+        silent! call system(printf('%s %s &', 'open', shellescape(g:textobj_uri)))
     endif
 endfunction
 

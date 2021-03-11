@@ -23,6 +23,7 @@ function! s:TextobjURIOpen()
 endfunction
 
 nnoremap <Plug>TextobjURIOpen :<C-u>call <sid>TextobjURIOpen()<CR>
+command! TextobjURIOpen :call <sid>TextobjURIOpen()
 
 if ! hasmapto('<Plug>TextobjURIOpen', 'n')
 	nmap go <Plug>TextobjURIOpen

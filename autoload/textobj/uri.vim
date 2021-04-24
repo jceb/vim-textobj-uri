@@ -36,7 +36,9 @@ let g:textobj_uri_patterns = {
 let g:textobj_uri_search_timeout = 100
 
 function! TextobjUriOpen()
-    if executable('open-cli')
+    if has('win32')
+        silent! call system(printf('start /b explorer %s', shellescape(g:textobj_uri)))
+    elseif executable('open-cli')
         silent! call system(printf('%s %s &', 'open-cli', shellescape(g:textobj_uri)))
     elseif executable('xdg-open')
         silent! call system(printf('%s %s &', 'xdg-open', shellescape(g:textobj_uri)))

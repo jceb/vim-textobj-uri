@@ -28,9 +28,9 @@ let g:textobj_uri_patterns_markdown = {
 			\ }
 
 let g:textobj_uri_patterns = {
-			\ '\%(http\|https\|file\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d\+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':call TextobjUriOpen()',
+			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d\+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':call TextobjUriOpen()',
 			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':call TextobjUriOpen()',
-			\ 'file:///\%(\K[\/.]*\)\+': ':call TextobjUriOpen()',
+			\ 'file:///\%([^	 ]\+\/*\)\+': ':call TextobjUriOpen()',
 			\ }
 
 let g:textobj_uri_search_timeout = 100

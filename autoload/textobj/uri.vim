@@ -31,6 +31,7 @@ let g:textobj_uri_patterns = {
 			\ '\%(http\|https\|ftp\):\/\/[a-zA-Z0-9:@_-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*\%(:\d\+\)\?\%(\/[a-zA-Z0-9_\/.\-+%#?&=;@$,!''*~]*\)\?': ':call TextobjUriOpen()',
 			\ 'mailto:[a-zA-Z0-9._]\+@[a-zA-Z0-9-]*\%(\.[a-zA-Z0-9][a-zA-Z0-9-]*\)*': ':call TextobjUriOpen()',
 			\ 'file:\/\/\/[^	 ]\+': ':call TextobjUriOpen()',
+			\ '\f\+': ':call TextobjUriRevealFile_macOS()',
 			\ }
 
 let g:textobj_uri_search_timeout = 100
@@ -49,6 +50,10 @@ function! TextobjUriOpen()
     elseif executable('open')
         silent! call system(printf('%s %s &', 'open', shellescape(g:textobj_uri)))
     endif
+endfunction
+
+function! TextobjUriRevealFile_macOS()
+    silent! call system(printf('%s %s &', 'open --reveal', shellescape(g:textobj_uri)))
 endfunction
 
 function! s:extract_uri(trailing_whitespace)
